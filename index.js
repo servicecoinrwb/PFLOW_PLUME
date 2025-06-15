@@ -77,12 +77,12 @@ async function connectWallet() {
     }
 }
 
+// In index.js - REPLACE your existing updateUI function with this one.
 async function updateUI() {
     try {
         const address = await signer.getAddress();
         userAddressEl.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 
-        // Fetch all data from the contract in parallel
         const [
             symbol,
             balanceBigInt,
@@ -103,21 +103,19 @@ async function updateUI() {
             propertyFlowContract.decimals()
         ]);
         
-        // Update the text content of the UI elements
         document.getElementById('contractSymbol').textContent = symbol;
         document.getElementById('contractSymbolDisplay').textContent = symbol;
         
         const maturityDate = new Date(Number(maturityTimestamp) * 1000);
         document.getElementById('maturityDate').textContent = maturityDate.toLocaleString();
         
-        // --- THIS IS THE FIX ---
-        // We must format the raw uint256 values into readable strings
-        // using the pUSD token's decimal count.
+        // THIS IS THE CRITICAL DISPLAY FIX:
+        // This formats the raw numbers into readable dollar amounts like "10.0".
         document.getElementById('purchasePrice').textContent = ethers.formatUnits(purchasePrice, PUSD_DECIMALS);
         document.getElementById('redeemRate').textContent = ethers.formatUnits(redeemRate, PUSD_DECIMALS);
         document.getElementById('earlyRedeemRate').textContent = ethers.formatUnits(earlyRedeemRate, PUSD_DECIMALS);
         
-        // Use the PFLOW token's own decimal value for correct formatting
+        // Use the token's own decimal value for correct formatting
         userBalanceEl.textContent = ethers.formatUnits(balanceBigInt, pflowDecimals);
         document.getElementById('totalSupply').textContent = ethers.formatUnits(totalSupply, pflowDecimals);
         
