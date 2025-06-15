@@ -6,8 +6,9 @@ const contractAddress = "0x14b3Fa2d3627ca1EC8042c9d33Bad94F72CEEe7f";
 const erc20Abi = [
     "function approve(address spender, uint256 amount) external returns (bool)"
 ];
-// This will be fetched from your contract later
-let pUSDAddress; 
+// Global variables to hold contract state
+let pUSDAddress;
+let purchasePrice; // We will store the fetched purchase price here
 
 // Global variables to hold ethers objects
 let provider;
@@ -54,11 +55,9 @@ async function connectWallet() {
         signer = await provider.getSigner();
         contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        // Hide connect button and show dApp interface
         connectButton.classList.add('hidden');
         dappInterface.classList.remove('hidden');
         
-        // Initial data fetch
         await updateUI();
         updateStatus("Connected successfully!");
 
@@ -73,7 +72,6 @@ async function connectWallet() {
  */
 async function updateUI() {
     try {
-        // Fetch contract and user data in parallel
         await Promise.all([updateContractInfo(), updateUserInfo()]);
     } catch (error) {
         console.error("Failed to update UI:", error);
@@ -85,8 +83,7 @@ async function updateUI() {
  * Fetches and displays general contract information.
  */
 async function updateContractInfo() {
-    // This function now also fetches the price and rates
-    const [name, symbol, maturity, totalSupply, pUSDAddr, purchasePrice, earlyRedeemRate, redeemRate] = await Promise.all([
+    const [name, symbol, maturity, totalSupply, pUSDAddr, fetchedPurchasePrice, earlyRedeemRate, redeemRate] = await Promise.all([
         contract.name(),
         contract.symbol(),
         contract.maturity(),
@@ -97,18 +94,19 @@ async function updateContractInfo() {
         contract.redeemRate()
     ]);
 
-    pUSDAddress = pUSDAddr; // Store pUSD address globally
+    pUSDAddress = pUSDAddr;
+    purchasePrice = fetchedPurchasePrice; // Store the price globally for calculations
 
     contractNameSpan.textContent = name;
     contractSymbolSpan.textContent = symbol;
     contractSymbolDisplay.textContent = symbol;
     maturityDateSpan.textContent = new Date(Number(maturity) * 1000).toLocaleString();
-    totalSupplySpan.textContent = ethers.formatUnits(totalSupply, 18); // Assuming 18 decimals for the token
+    totalSupplySpan.textContent = ethers.formatUnits(totalSupply, 18);
 
-    // Display the new price info, assuming 2 decimal places for price
-    purchasePriceSpan.textContent = ethers.formatUnits(purchasePrice, 2);
-    earlyRedeemRateSpan.textContent = ethers.formatUnits(earlyRedeemRate, 2);
-    redeemRateSpan.textContent = ethers.formatUnits(redeemRate, 2);
+    // CORRECTED: Format prices using 18 decimals
+    purchasePriceSpan.textContent = ethers.formatUnits(purchasePrice, 18);
+    earlyRedeemRateSpan.textContent = ethers.formatUnits(earlyRedeemRate, 18);
+    redeemRateSpan.textContent = ethers.formatUnits(redeemRate, 18);
 }
 
 /**
@@ -119,7 +117,7 @@ async function updateUserInfo() {
     const balance = await contract.balanceOf(address);
 
     userAddressSpan.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-    userBalanceSpan.textContent = ethers.formatUnits(balance, 18); // Assuming 18 decimals
+    userBalanceSpan.textContent = ethers.formatUnits(balance, 18);
 }
 
 
@@ -127,29 +125,35 @@ async function updateUserInfo() {
  * Handles the token buying process (Approve + Buy).
  */
 async function handleBuy() {
-    const amount = buyAmountInput.value;
-    if (!amount || amount <= 0) {
+    const pUSDAmountToSpendStr = buyAmountInput.value;
+    if (!pUSDAmountToSpendStr || pUSDAmountToSpendStr <= 0) {
         updateStatus("Please enter a valid amount.");
         return;
     }
 
     try {
-        const amountInWei = ethers.parseUnits(amount, 18); // Assuming pUSD also has 18 decimals
+        // This is the amount of pUSD the user wants to spend
+        const pUSDAmountToSpend = ethers.parseUnits(pUSDAmountToSpendStr, 18);
+        
+        // CORRECTED LOGIC: Calculate how many PFLOW25 tokens the user will get for their pUSD
+        // This reverses the math in the smart contract: (pUSD * 1e18) / price
+        const pflow25ToReceive = (pUSDAmountToSpend * BigInt(1e18)) / purchasePrice;
 
         // 1. Approve the contract to spend pUSD
-        updateStatus(`1/2: Approving pUSD spending...`);
+        updateStatus(`1/2: Approving ${pUSDAmountToSpendStr} pUSD spending...`);
         const pUSDContract = new ethers.Contract(pUSDAddress, erc20Abi, signer);
-        const approveTx = await pUSDContract.approve(contractAddress, amountInWei);
+        // We approve the exact cost, which is the amount of pUSD to spend
+        const approveTx = await pUSDContract.approve(contractAddress, pUSDAmountToSpend);
         await approveTx.wait();
         updateStatus(`1/2: Approval successful!`);
 
-        // 2. Execute the buy function
-        updateStatus(`2/2: Executing buy transaction...`);
-        const buyTx = await contract.buy(amountInWei);
+        // 2. Execute the buy function with the calculated amount of PFLOW25 tokens
+        updateStatus(`2/2: Buying ${ethers.formatUnits(pflow25ToReceive, 18)} PFLOW25...`);
+        const buyTx = await contract.buy(pflow25ToReceive);
         await buyTx.wait();
         
         updateStatus(`Successfully bought tokens!`);
-        await updateUI(); // Refresh UI to show new balance
+        await updateUI();
 
     } catch (error) {
         console.error(error);
@@ -173,7 +177,7 @@ async function handleRedeem() {
         await tx.wait();
 
         updateStatus("Tokens redeemed successfully!");
-        await updateUI(); // Refresh UI
+        await updateUI();
 
     } catch (error) {
         console.error(error);
@@ -183,7 +187,6 @@ async function handleRedeem() {
 
 /**
  * Updates the status message shown to the user.
- * @param {string} message The message to display.
  */
 function updateStatus(message) {
     statusElement.textContent = message;
