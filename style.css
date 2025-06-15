@@ -1,109 +1,136 @@
-/* --- Basic Setup & Font --- */
-body {
-    font-family: 'Inter', sans-serif; /* Use Inter as the default font */
-    background-color: #f4f7f6; /* A soft off-white background */
-    color: #333; /* Dark grey for text for better readability */
-    line-height: 1.6;
+/* --- CSS Variables for Easy Theming --- */
+:root {
+    --primary-color: #3182ce; /* Blue */
+    --primary-hover: #2b6cb0;
+    --background-color: #f7fafc;
+    --card-background: #ffffff;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --border-color: #e2e8f0;
+}
+
+/* --- Global Styles & Font Setup --- */
+* {
+    box-sizing: border-box;
     margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-secondary);
+    line-height: 1.6;
     padding: 2rem;
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
+/* --- Layout & Main Content --- */
 main {
     max-width: 600px;
     width: 100%;
 }
 
+#dapp.hidden {
+    display: none;
+}
+
 /* --- Typography --- */
 h1 {
-    font-size: 2.5rem; /* Larger heading */
-    font-weight: 700; /* Bolder */
-    color: #1a202c;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 h2 {
     font-size: 1.25rem;
-    font-weight: 500; /* Medium weight for subheadings */
-    color: #2d3748;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 0.5rem;
-    margin-top: 0;
+    font-weight: 500;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
-p {
+p.description {
     margin-bottom: 1rem;
-    font-size: 0.95rem;
 }
 
 strong {
-    font-weight: 500; /* Make bold text a bit less harsh */
-    color: #4a5568;
+    font-weight: 500;
+    color: var(--text-secondary);
 }
 
-/* --- Card Styling --- */
+/* --- Card & Informational Layout --- */
 .card {
-    background-color: #ffffff;
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
     margin-bottom: 2rem;
 }
 
-/* --- Button & Input Styling --- */
-button,
-#buyButton,
-#redeemButton,
-#earlyRedeemButton {
-    font-family: 'Inter', sans-serif; /* Ensure buttons use the same font */
+/* Flexbox layout for clean label-value pairs */
+.info-p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-p:last-of-type {
+    border-bottom: none;
+}
+
+/* --- Buttons & Interactive Elements --- */
+button {
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     font-weight: 500;
     color: #ffffff;
-    background-color: #4299e1; /* A nice blue */
+    background-color: var(--primary-color);
     border: none;
     border-radius: 6px;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    width: 100%; /* Make action buttons full-width */
+    width: 100%;
 }
 
-button:hover,
-#buyButton:hover,
-#redeemButton:hover,
-#earlyRedeemButton:hover {
-    background-color: #3182ce; /* A darker blue on hover */
+button:hover {
+    background-color: var(--primary-hover);
 }
 
 #connectButton {
     display: block;
-    margin: 0 auto 2rem auto; /* Center the connect button */
     width: auto;
-}
-
-input[type="number"] {
-    font-family: 'Inter', sans-serif;
-    width: calc(100% - 2rem); /* Full width minus padding */
-    padding: 0.75rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
-    font-size: 1rem;
-    margin-bottom: 0.5rem; /* Space below the input */
+    margin: 0 auto 2rem auto;
 }
 
 .action-item {
-    margin-bottom: 1rem; /* Space out actions */
+    margin-bottom: 1rem;
 }
-
 .action-item:last-child {
     margin-bottom: 0;
 }
 
-/* --- Utility Classes from your HTML --- */
-.hidden {
-    display: none;
+input[type="number"] {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+/* --- Status Message --- */
+#status {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-top: 1rem;
+    font-size: 0.9rem;
 }
