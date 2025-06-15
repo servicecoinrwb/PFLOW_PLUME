@@ -1,12 +1,29 @@
 // --- Constants and Configuration ---
-// IMPORTANT: Replace with your actual contract addresses and ABIs
+// IMPORTANT: Replace with your actual contract addresses
 const PUSD_CONTRACT_ADDRESS = "YOUR_PUSD_STABLECOIN_CONTRACT_ADDRESS";
 const PROPERTYFLOW_CONTRACT_ADDRESS = "YOUR_PROPERTYFLOW_BOND_CONTRACT_ADDRESS";
-const PUSD_CONTRACT_ABI = [/* ... pUSD contract's ABI ... */];
-const PROPERTYFLOW_CONTRACT_ABI = [/* ... PropertyFlow contract's ABI ... */];
 
-// The number of decimals your stablecoin uses (e.g., 18 for DAI, 6 for USDC)
-const PUSD_DECIMALS = 6;
+// The number of decimals your stablecoin uses. VERIFY THIS on a block explorer.
+const PUSD_DECIMALS = 6; // It is very likely 6 for a pUSD-like token.
+
+// --- NEW: Full ABI for the PropertyFlow Contract ---
+const PROPERTYFLOW_CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"_pUSDAddress","type":"address"},{"internalType":"uint256","name":"_purchasePrice","type":"uint256"},{"internalType":"uint256","name":"_redeemRate","type":"uint256"},{"internalType":"uint256","name":"_earlyRedeemRate","type":"uint256"},{"internalType":"uint256","name":"_durationSeconds","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"payout","type":"uint256"}],"name":"EarlyRedeemed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"payout","type":"uint256"}],"name":"Redeemed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"earlyRedeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"earlyRedeemRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"emergencyWithdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"enableTransfers","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"fundVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lastBuyTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maturity","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pUSD","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"purchasePrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"redeemRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"transfersEnabled","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"usdcBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}];
+
+// You must provide the pUSD contract's ABI to approve it for spending
+const PUSD_CONTRACT_ABI = [
+    // A minimal ABI for ERC20 approve function
+    {
+        "constant": false,
+        "inputs": [
+            { "name": "_spender", "type": "address" },
+            { "name": "_value", "type": "uint256" }
+        ],
+        "name": "approve",
+        "outputs": [ { "name": "", "type": "bool" } ],
+        "payable": false, "stateMutability": "nonpayable", "type": "function"
+    }
+];
+
 
 // --- DOM Element Selection ---
 const connectButton = document.getElementById('connectButton');
@@ -15,7 +32,6 @@ const dappSection = document.getElementById('dapp');
 const statusEl = document.getElementById('status');
 const userAddressEl = document.getElementById('userAddress');
 const userBalanceEl = document.getElementById('userBalance');
-// ... add all other element selectors here
 
 // --- Application State ---
 let provider;
@@ -25,25 +41,32 @@ let propertyFlowContract;
 
 // --- Core Functions ---
 
-/**
- * Connects to the user's wallet (e.g., MetaMask) and initializes the dApp.
- */
-async function connectWallet() {
+async function init() {
     if (typeof window.ethereum === 'undefined') {
-        setStatus('Wallet not found. Please install MetaMask or another wallet.');
+        setStatus('Wallet not found. Please install a browser wallet.');
         return;
     }
-    
-    try {
-        provider = new ethers.BrowserProvider(window.ethereum);
-        signer = await provider.getSigner();
+    provider = new ethers.BrowserProvider(window.ethereum);
+    const accounts = await provider.listAccounts();
+    if (accounts.length > 0) {
+        await connectWallet();
+    }
+    window.ethereum.on('accountsChanged', () => window.location.reload());
+}
 
+async function connectWallet() {
+    try {
+        if (!signer) {
+           signer = await provider.getSigner();
+        }
         pusdContract = new ethers.Contract(PUSD_CONTRACT_ADDRESS, PUSD_CONTRACT_ABI, signer);
         propertyFlowContract = new ethers.Contract(PROPERTYFLOW_CONTRACT_ADDRESS, PROPERTYFLOW_CONTRACT_ABI, signer);
         
         dappSection.classList.remove('hidden');
         connectButton.textContent = 'Wallet Connected';
         connectButton.disabled = true;
+        connectButton.style.cursor = 'default';
+        connectButton.style.backgroundColor = '#4a5568';
 
         await updateUI();
         setStatus('Ready for transactions.');
@@ -54,32 +77,51 @@ async function connectWallet() {
     }
 }
 
-/**
- * Fetches data from the blockchain and updates the user interface.
- */
 async function updateUI() {
     try {
         const address = await signer.getAddress();
         userAddressEl.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 
-        // Fetch user's PFLOW25 balance and format it for display
-        const balanceBigInt = await propertyFlowContract.balanceOf(address);
-        // 'formatUnits' is the reverse of 'parseUnits', making BigInts human-readable
-        userBalanceEl.textContent = ethers.formatUnits(balanceBigInt, 18); // Assuming PFLOW25 also has 18 decimals
-
-        // You can fetch and display other contract data here
-        // Example:
-        // document.getElementById('contractSymbol').textContent = await propertyFlowContract.symbol();
+        const [
+            symbol,
+            balanceBigInt,
+            maturityTimestamp,
+            purchasePrice,
+            redeemRate,
+            earlyRedeemRate,
+            totalSupply,
+            pflowDecimals
+        ] = await Promise.all([
+            propertyFlowContract.symbol(),
+            propertyFlowContract.balanceOf(address),
+            propertyFlowContract.maturity(), // CORRECTED: was maturityDate
+            propertyFlowContract.purchasePrice(),
+            propertyFlowContract.redeemRate(),
+            propertyFlowContract.earlyRedeemRate(),
+            propertyFlowContract.totalSupply(),
+            propertyFlowContract.decimals()
+        ]);
+        
+        document.getElementById('contractSymbol').textContent = symbol;
+        document.getElementById('contractSymbolDisplay').textContent = symbol;
+        
+        const maturityDate = new Date(Number(maturityTimestamp) * 1000);
+        document.getElementById('maturityDate').textContent = maturityDate.toLocaleString();
+        
+        document.getElementById('purchasePrice').textContent = ethers.formatUnits(purchasePrice, PUSD_DECIMALS);
+        document.getElementById('redeemRate').textContent = ethers.formatUnits(redeemRate, PUSD_DECIMALS);
+        document.getElementById('earlyRedeemRate').textContent = ethers.formatUnits(earlyRedeemRate, PUSD_DECIMALS);
+        
+        // Use the token's own decimal value for correct formatting
+        userBalanceEl.textContent = ethers.formatUnits(balanceBigInt, pflowDecimals);
+        document.getElementById('totalSupply').textContent = ethers.formatUnits(totalSupply, pflowDecimals);
+        
     } catch (error) {
         console.error("Failed to update UI:", error);
-        setStatus("Could not fetch chain data.");
+        setStatus("Could not fetch chain data. Check ABI and contract addresses.");
     }
 }
 
-
-/**
- * Handles the token purchase logic, including approval.
- */
 async function buyTokens() {
     const amountToSpend = document.getElementById('buyAmount').value;
     if (!amountToSpend || isNaN(amountToSpend) || +amountToSpend <= 0) {
@@ -90,44 +132,33 @@ async function buyTokens() {
     setStatus('Processing transaction...');
     
     try {
-        // 1. Convert the human-readable amount to the token's base unit (Wei)
-        // This is the CRITICAL FIX for the decimal issue.
         const amountInWei = ethers.parseUnits(amountToSpend, PUSD_DECIMALS);
-
-        // 2. Approve the PropertyFlow contract to spend the user's pUSD
         setStatus(`Approving ${amountToSpend} pUSD for spending...`);
         const approveTx = await pusdContract.approve(PROPERTYFLOW_CONTRACT_ADDRESS, amountInWei);
-        
-        // Wait for the approval transaction to be mined
         await approveTx.wait();
+        
         setStatus('Approval successful! Now proceeding with purchase...');
-
-        // 3. Call the actual buy function on your contract
-        const buyTx = await propertyFlowContract.purchase(amountInWei); // Or whatever your function is named
+        
+        // CORRECTED: The function name is 'buy' not 'purchase'
+        const buyTx = await propertyFlowContract.buy(amountInWei);
         await buyTx.wait();
 
         setStatus(`Successfully purchased tokens!`);
-        await updateUI(); // Refresh the user's balance
+        await updateUI();
 
     } catch (error) {
         console.error('Transaction failed:', error);
-        setStatus(`Transaction failed: ${error.reason || error.message}`);
+        setStatus(`Transaction failed: ${error.reason || 'User rejected the transaction.'}`);
     }
 }
 
-/**
- * Helper function to update the status message on the page.
- * @param {string} message - The message to display.
- */
 function setStatus(message) {
     statusEl.textContent = message;
 }
-
 
 // --- Event Listeners ---
 connectButton.addEventListener('click', connectWallet);
 buyButton.addEventListener('click', buyTokens);
 
-// TODO: Add event listeners for your redeem buttons
-// redeemButton.addEventListener('click', redeemAtMaturity);
-// earlyRedeemButton.addEventListener('click', redeemEarly);
+// Run the initialization function when the script loads.
+init();
