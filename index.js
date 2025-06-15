@@ -125,29 +125,46 @@ async function updateUI() {
     }
 }
 
+// In index.js - REPLACE your existing buyTokens function with this one.
 async function buyTokens() {
-    const amountToSpend = document.getElementById('buyAmount').value;
-    if (!amountToSpend || isNaN(amountToSpend) || +amountToSpend <= 0) {
-        setStatus('Please enter a valid amount.');
+    // This is the number of PFLOW25 tokens the user wants to buy (e.g., 1000)
+    const pflowAmountToBuy = document.getElementById('buyAmount').value;
+    if (!pflowAmountToBuy || isNaN(pflowAmountToBuy) || +pflowAmountToBuy <= 0) {
+        setStatus('Please enter a valid number of tokens to buy.');
         return;
     }
 
-    setStatus('Processing transaction...');
-    
+    setStatus('Calculating cost and preparing transaction...');
+
     try {
-        const amountInWei = ethers.parseUnits(amountToSpend, PUSD_DECIMALS);
-        setStatus(`Approving ${amountToSpend} pUSD for spending...`);
-        const approveTx = await pusdContract.approve(PROPERTYFLOW_CONTRACT_ADDRESS, amountInWei);
+        // Step 1: Get the purchase price per token from the contract.
+        const pricePerToken = await propertyFlowContract.purchasePrice(); // This is a BigInt
+
+        // Step 2: Convert the user's input into a BigInt using the PFLOW25 token's decimals.
+        const pflowDecimals = await propertyFlowContract.decimals();
+        const pflowAmountAsBigInt = ethers.parseUnits(pflowAmountToBuy, pflowDecimals);
+
+        // Step 3: Calculate the total cost in pUSD.
+        // We need to normalize the calculation since prices and tokens can have different decimals.
+        // Formula: totalCost = (amount_of_pflow * price_per_pflow) / 10^(pflow_decimals)
+        const totalCostInPUSD = (pflowAmountAsBigInt * pricePerToken) / (10n ** BigInt(pflowDecimals));
+
+        // Let the user know the calculated cost.
+        const formattedCost = ethers.formatUnits(totalCostInPUSD, PUSD_DECIMALS);
+        setStatus(`Total cost: ${formattedCost} pUSD. Please approve in your wallet...`);
+
+        // Step 4: Approve the spending of the CALCULATED total cost.
+        const approveTx = await pusdContract.approve(PROPERTYFLOW_CONTRACT_ADDRESS, totalCostInPUSD);
         await approveTx.wait();
         
-        setStatus('Approval successful! Now proceeding with purchase...');
-        
-        // CORRECTED: The function name is 'buy' not 'purchase'
-        const buyTx = await propertyFlowContract.buy(amountInWei);
+        setStatus('Approval successful! Executing purchase...');
+
+        // Step 5: Call the 'buy' function with the amount of PFLOW25 tokens to purchase.
+        const buyTx = await propertyFlowContract.buy(pflowAmountAsBigInt);
         await buyTx.wait();
 
-        setStatus(`Successfully purchased tokens!`);
-        await updateUI();
+        setStatus(`Successfully purchased ${pflowAmountToBuy} PFLOW25 tokens!`);
+        await updateUI(); // Refresh UI to show new balance
 
     } catch (error) {
         console.error('Transaction failed:', error);
