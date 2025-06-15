@@ -6,7 +6,7 @@ const PUSD_CONTRACT_ABI = [/* ... pUSD contract's ABI ... */];
 const PROPERTYFLOW_CONTRACT_ABI = [/* ... PropertyFlow contract's ABI ... */];
 
 // The number of decimals your stablecoin uses (e.g., 18 for DAI, 6 for USDC)
-const PUSD_DECIMALS = 18;
+const PUSD_DECIMALS = 6;
 
 // --- DOM Element Selection ---
 const connectButton = document.getElementById('connectButton');
