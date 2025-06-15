@@ -1,7 +1,7 @@
 // --- Constants and Configuration ---
 // IMPORTANT: Replace with your actual contract addresses
-const PUSD_CONTRACT_ADDRESS = "YOUR_PUSD_STABLECOIN_CONTRACT_ADDRESS";
-const PROPERTYFLOW_CONTRACT_ADDRESS = "YOUR_PROPERTYFLOW_BOND_CONTRACT_ADDRESS";
+const PUSD_CONTRACT_ADDRESS = "0xdddD73F5Df1F0DC31373357beAC77545dC5A6f3F";
+const PROPERTYFLOW_CONTRACT_ADDRESS = "0x14b3Fa2d3627ca1EC8042c9d33Bad94F72CEEe7f";
 
 // The number of decimals your stablecoin uses. VERIFY THIS on a block explorer.
 const PUSD_DECIMALS = 6; // It is very likely 6 for a pUSD-like token.
