@@ -8,7 +8,7 @@ const erc20Abi = [
 ];
 // Global variables to hold contract state
 let pUSDAddress;
-let purchasePrice; // We will store the fetched purchase price here
+let purchasePrice; 
 
 // Global variables to hold ethers objects
 let provider;
@@ -29,6 +29,7 @@ const userBalanceSpan = document.getElementById('userBalance');
 const buyAmountInput = document.getElementById('buyAmount');
 const buyButton = document.getElementById('buyButton');
 const redeemButton = document.getElementById('redeemButton');
+const earlyRedeemButton = document.getElementById('earlyRedeemButton'); // New button
 const purchasePriceSpan = document.getElementById('purchasePrice');
 const earlyRedeemRateSpan = document.getElementById('earlyRedeemRate');
 const redeemRateSpan = document.getElementById('redeemRate');
@@ -37,6 +38,7 @@ const redeemRateSpan = document.getElementById('redeemRate');
 connectButton.addEventListener('click', connectWallet);
 buyButton.addEventListener('click', handleBuy);
 redeemButton.addEventListener('click', handleRedeem);
+earlyRedeemButton.addEventListener('click', handleEarlyRedeem); // New listener
 
 // --- FUNCTIONS ---
 
@@ -95,7 +97,7 @@ async function updateContractInfo() {
     ]);
 
     pUSDAddress = pUSDAddr;
-    purchasePrice = fetchedPurchasePrice; // Store the price globally for calculations
+    purchasePrice = fetchedPurchasePrice;
 
     contractNameSpan.textContent = name;
     contractSymbolSpan.textContent = symbol;
@@ -103,7 +105,6 @@ async function updateContractInfo() {
     maturityDateSpan.textContent = new Date(Number(maturity) * 1000).toLocaleString();
     totalSupplySpan.textContent = ethers.formatUnits(totalSupply, 18);
 
-    // CORRECTED: Format prices using 18 decimals
     purchasePriceSpan.textContent = ethers.formatUnits(purchasePrice, 18);
     earlyRedeemRateSpan.textContent = ethers.formatUnits(earlyRedeemRate, 18);
     redeemRateSpan.textContent = ethers.formatUnits(redeemRate, 18);
@@ -132,22 +133,17 @@ async function handleBuy() {
     }
 
     try {
-        // This is the amount of pUSD the user wants to spend
-        const pUSDAmountToSpend = ethers.parseUnits(pUSDAmountToSpendStr, 18);
+        // *** CRITICAL FIX HERE: Using 8 decimals for pUSD ***
+        const pUSDAmountToSpend = ethers.parseUnits(pUSDAmountToSpendStr, 8);
         
-        // CORRECTED LOGIC: Calculate how many PFLOW25 tokens the user will get for their pUSD
-        // This reverses the math in the smart contract: (pUSD * 1e18) / price
         const pflow25ToReceive = (pUSDAmountToSpend * BigInt(1e18)) / purchasePrice;
 
-        // 1. Approve the contract to spend pUSD
         updateStatus(`1/2: Approving ${pUSDAmountToSpendStr} pUSD spending...`);
         const pUSDContract = new ethers.Contract(pUSDAddress, erc20Abi, signer);
-        // We approve the exact cost, which is the amount of pUSD to spend
         const approveTx = await pUSDContract.approve(contractAddress, pUSDAmountToSpend);
         await approveTx.wait();
         updateStatus(`1/2: Approval successful!`);
 
-        // 2. Execute the buy function with the calculated amount of PFLOW25 tokens
         updateStatus(`2/2: Buying ${ethers.formatUnits(pflow25ToReceive, 18)} PFLOW25...`);
         const buyTx = await contract.buy(pflow25ToReceive);
         await buyTx.wait();
@@ -162,7 +158,7 @@ async function handleBuy() {
 }
 
 /**
- * Handles the redeeming process.
+ * Handles the redeeming process for after the maturity date.
  */
 async function handleRedeem() {
     updateStatus("Executing redeem transaction...");
@@ -182,6 +178,30 @@ async function handleRedeem() {
     } catch (error) {
         console.error(error);
         updateStatus(error.reason || "Error redeeming tokens.");
+    }
+}
+
+/**
+ * Handles the early redeeming process.
+ */
+async function handleEarlyRedeem() {
+    updateStatus("Executing EARLY redeem transaction...");
+    try {
+        const balance = await contract.balanceOf(await signer.getAddress());
+        if (balance === 0n) {
+            updateStatus("You have no tokens to redeem.");
+            return;
+        }
+
+        const tx = await contract.earlyRedeem(); // Calling the new function
+        await tx.wait();
+
+        updateStatus("Tokens redeemed early successfully!");
+        await updateUI();
+
+    } catch (error) {
+        console.error(error);
+        updateStatus(error.reason || "Error on early redeem. You may need to hold for 45 days.");
     }
 }
 

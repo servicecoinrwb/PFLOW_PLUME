@@ -35,8 +35,13 @@
                     <input type="number" id="buyAmount" placeholder="Amount of pUSD to spend">
                     <button id="buyButton">Buy Tokens</button>
                 </div>
+                <!-- This button is for the standard redeem after maturity -->
                 <div class="action-item">
-                    <button id="redeemButton">Redeem Your Full Balance</button>
+                    <button id="redeemButton">Redeem at Maturity</button>
+                </div>
+                <!-- This is the new button for early redemption -->
+                <div class="action-item">
+                    <button id="earlyRedeemButton">Redeem Early</button>
                 </div>
             </div>
             
@@ -44,7 +49,9 @@
         </section>
     </main>
 
+    <!-- This loads the ethers library directly from a CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.1/ethers.umd.min.js"></script>
+    <!-- This links to our dApp logic -->
     <script type="module" src="index.js"></script>
 </body>
 </html>
