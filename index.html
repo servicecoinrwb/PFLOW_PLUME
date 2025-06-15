@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PropertyFlow</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,22 +18,22 @@
 
         <section id="dapp" class="hidden">
             <div class="card">
-                <h2>PropertyFlow is a real-world asset (RWA) bond system that tokenizes commercial lease and overhead payments. 
-                    Buy PFLOW25 for $10 and earn $12 after 12 months. Available for a limited time — cutoff at 9 months. 
-                    Early redemption allowed after 45 days at a reduced rate. Fractional purchases supported.</h2>
-                <p><strong>Name:</strong> <span id="contractName">-</span></p>
-                <p><strong>Symbol:</strong> <span id="contractSymbol">-</span></p>
-                <p><strong>Maturity Date:</strong> <span id="maturityDate">-</span></p>
-                <p><strong>Total Supply:</strong> <span id="totalSupply">-</span></p>
-                <p><strong>Purchase Price:</strong> $<span id="purchasePrice">-</span></p>
-                <p><strong>Early Redeem Rate:</strong> $<span id="earlyRedeemRate">-</span></p>
-                <p><strong>Maturity Redeem Rate:</strong> $<span id="redeemRate">-</span></p>
+                <h2>PFLOW25 Bond</h2>
+                <p class="description">
+                    This is a real-world asset (RWA) bond that tokenizes commercial lease and overhead payments.
+                </p>
+                <p class="info-p"><strong>Symbol:</strong> <span id="contractSymbol">-</span></p>
+                <p class="info-p"><strong>Maturity Date:</strong> <span id="maturityDate">-</span></p>
+                <p class="info-p"><strong>Purchase Price:</strong> $<span id="purchasePrice">-</span></p>
+                <p class="info-p"><strong>Maturity Value:</strong> $<span id="redeemRate">-</span></p>
+                <p class="info-p"><strong>Early Redemption Rate:</strong> $<span id="earlyRedeemRate">-</span></p>
+                <p class="info-p"><strong>Total Supply:</strong> <span id="totalSupply">-</span></p>
             </div>
 
             <div class="card">
                 <h2>Your Information</h2>
-                <p><strong>Wallet:</strong> <span id="userAddress">-</span></p>
-                <p><strong>Your Balance:</strong> <span id="userBalance">-</span> <span id="contractSymbolDisplay"></span></p>
+                <p class="info-p"><strong>Wallet:</strong> <span id="userAddress">-</span></p>
+                <p class="info-p"><strong>Your Balance:</strong> <span><span id="userBalance">-</span> <span id="contractSymbolDisplay">PFLOW25</span></span></p>
             </div>
 
             <div class="card">
@@ -37,23 +42,19 @@
                     <input type="number" id="buyAmount" placeholder="Amount of pUSD to spend">
                     <button id="buyButton">Buy Tokens</button>
                 </div>
-                <!-- This button is for the standard redeem after maturity -->
                 <div class="action-item">
                     <button id="redeemButton">Redeem at Maturity</button>
                 </div>
-                <!-- This is the new button for early redemption -->
                 <div class="action-item">
                     <button id="earlyRedeemButton">Redeem Early</button>
                 </div>
             </div>
             
-            <p id="status">-</p>
+            <p id="status">Please connect your wallet to begin.</p>
         </section>
     </main>
 
-    <!-- This loads the ethers library directly from a CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.1/ethers.umd.min.js"></script>
-    <!-- This links to our dApp logic -->
     <script type="module" src="index.js"></script>
 </body>
 </html>
